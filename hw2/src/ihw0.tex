@@ -1,0 +1,277 @@
+\problemset{Теория вероятностей и математическая статистика}
+\problemset{Индивидуальное домашнее задание №2}	% поменяйте номер ИДЗ
+
+\renewcommand*{\proofname}{Решение}
+
+%%%%%%%%%%%%%% ЗАДАНИЕ №1 %%%%%%%%%%%%%%
+%% Условие задания №1
+\begin{problem}
+Распределение случайной величины $\xi$ задано таблицей:
+
+\[
+  \begin{tabular}{ccc}
+    k                & 2   & 3   \\
+    $\textup{p}_{k}$ & 1/2 & 1/2 \\
+  \end{tabular}
+\]
+
+Вычислить $\Expect\xi$, $\Variance\xi$, $\Entropy\xi$ (в натах). Вычислить распределение $\eta = |\xi-1| ^ {3/2}.$ Построить графики функций распределений $F_\xi(x)$ и $F_\eta(y).$
+\end{problem}
+
+%% Решение задания №1
+\begin{proof}
+
+  \begin{enumerate}
+    \item Найдем математическое ожидание случайной величины $ \xi $:
+          \[
+            \Expect\xi = \sum_{k} k \cdot \textup{p}_{k} = 2 \cdot \frac{1}{2} + 3 \cdot \frac{1}{2} = \frac{5}{2}.
+          \]
+
+    \item Найдем дисперсию случайной величины $ \xi $:
+          \[
+            \Variance\xi = \Expect\xi^{2} - (\Expect\xi)^{2} = \sum_{k} k^{2} \cdot \textup{p}_{k} - \left( \frac{5}{2} \right)^{2} = 2^{2} \cdot \frac{1}{2} + 3^{2} \cdot \frac{1}{2} - \left( \frac{5}{2} \right)^{2} = \frac{1}{4}.
+          \]
+
+    \item Найдем энтропию случайной величины $ \xi $:
+          \[
+            \Entropy\xi = - \sum_{k} \textup{p}_{k} \cdot \ln \textup{p}_{k} = - \frac{1}{2}  \ln \frac{1}{2} - \frac{1}{2}  \ln \frac{1}{2} = \ln 2.
+          \]
+
+    \item Найдем распределение случайной величины $ \eta = |\xi - 1|^{3/2} $:
+
+          Носитель случайной величины $ \supp \xi = \{2, 3\} $.
+
+          Носитель случайной величины $ \supp \eta = \{1, 2\sqrt{2}\} $:
+
+          \subitem При $ k = 2 $: $ \eta = |2 - 1|^{3/2} = 1^{3/2} = 1 $.
+
+          \subitem При $ k = 3 $: $ \eta = |3 - 1|^{3/2} = 2^{3/2} = 2\sqrt{2} $.
+
+          Таким образом, распределение случайной величины $ \eta $ задается таблицей:
+
+          \[
+            \begin{tabular}{ccc}
+              $y$              & $1$           & $2\sqrt{2}$    \\
+              $\textup{p}_{y}$ & $\frac{1}{2}$ & $\frac{1}{2} $ \\
+            \end{tabular}
+          \]
+
+    \item Построим графики функций распределений $ F_{\xi}(x) $ и $ F_{\eta}(y) $:
+
+          Функция распределения $ F_{\xi}(x) $ задается следующим образом:
+
+          \[
+            F_{\xi}(x) =
+            \begin{cases}
+              0,   & x \in (-\infty, 2], \\
+              1/2, & x \in (2, 3],       \\
+              1,   & x \in (2, +\infty).
+            \end{cases}
+          \]
+
+          Функция распределения $ F_{\eta}(y) $ задается следующим образом:
+
+          \[
+            F_{\eta}(y) =
+            \begin{cases}
+              0,   & y \in (-\infty, 1],         \\
+              1/2, & y \in (1, 2\sqrt{2}],       \\
+              1,   & y \in (2\sqrt{2}, +\infty).
+            \end{cases}
+          \]
+
+          Графики функций распределений $ F_{\xi}(x) $ и $ F_{\eta}(y) $ изображены на рисунках~\ref{fig:hw2:ind:1} и~\ref{fig:hw2:ind:2}.
+
+          \begin{figure}[h!]
+            \centering
+            \begin{tikzpicture}
+              \begin{axis}[
+                  xlabel=$x$,
+                  ylabel=$F_{\xi}(x)$,
+                  xmin=-2, xmax=4,
+                  ymin=0, ymax=1.5,
+                  axis lines=middle,
+                  clip=false,
+                  extra x ticks={0},
+                  xtick={-1, 0, 1, 2, 3},
+                  ytick={0, 0.5, 1},
+                  yticklabels={0, $\frac{1}{2}$, 1},
+                  width=8cm,
+                  height=6cm
+                ]
+                \addplot[blue, domain=-2:2] {0};
+                \addplot[blue, domain=2:3] {0.5};
+                \addplot[blue, domain=3:4] {1};
+                \addplot[blue, mark=*, mark options={fill=white}, only marks] coordinates {(3,1)};
+                \addplot[blue, mark=*, mark options={fill=white}, only marks] coordinates {(2,0.5)};
+              \end{axis}
+            \end{tikzpicture}
+            \caption{График $F_{\xi}(x)$}
+            \label{fig:hw2:ind:1}
+          \end{figure}
+
+          \begin{figure}[h!]
+            \centering
+            \begin{tikzpicture}
+              \begin{axis}[
+                  xlabel=$y$,
+                  ylabel=$F_{\eta}(y)$,
+                  xmin=-2, xmax=4,
+                  ymin=0, ymax=1.5,
+                  axis lines=middle,
+                  clip=false,
+                  extra x ticks={0},
+                  xtick={-1, 0, 1, 2, 2.82, 3},
+                  ytick={0, 0.5, 1},
+                  xticklabels={-1, 0, 1, 2, , 3},
+                  yticklabels={0, $\frac{1}{2}$, 1},
+                  width=8cm,
+                  height=6cm
+                ]
+                \addplot[blue, domain=-2:1] {0};
+                \addplot[blue, domain=1:2.82] {0.5};
+                \addplot[blue, domain=2.82:4] {1};
+                \addplot[blue, mark=*, mark options={fill=white}, only marks] coordinates {(1,0.5)};
+                \addplot[blue, mark=*, mark options={fill=white}, only marks] coordinates {(2.82,1)};
+              \end{axis}
+            \end{tikzpicture}
+            \caption{График $F_{\eta}(y)$}
+            \label{fig:hw2:ind:2}
+          \end{figure}
+
+  \end{enumerate}
+\end{proof}
+
+%%%%%%%%%%%%%% ЗАДАНИЕ №2 %%%%%%%%%%%%%%
+%% Условие задания №2
+\begin{problem}
+Дана функция распределения абсолютно непрерывной случайной величины $\xi{:}$
+
+\[
+  F_\xi(x)=\left\{\begin{matrix}0, x\leqslant0,\\\sin(2x), x\in(0,C],\\1, x>C.\end{matrix}\right.
+\]
+Вычислить $C,\quad\mathbb{E}\xi,\quad\mathbb{D}\xi,\quad\mathbb{H}\xi\quad($в натах). Вычислить распределение $\eta=\sin(3\xi).$ Построить графики функций распределений $F_\xi(x)$ и $F_\eta(y).$
+\end{problem}
+
+%% Решение задания №2
+\begin{proof}
+  \begin{enumerate}
+    \item Найдем константу $ C $:
+          \[
+            F_{\xi}(C) = 1 \Rightarrow \sin(2C) = 1 \Rightarrow 2C = \frac{\pi}{2} \Rightarrow C = \frac{\pi}{4}.
+          \]
+
+    \item Плотность распределения случайной величины $ \xi $:
+          \[
+            p_{\xi}(x) = \frac{dF_{\xi}(x)}{dx} = 2 \cos(2x) \cdot \ind{0 < x \leqslant \frac{\pi}{4}}.
+          \]
+
+    \item Найдем математическое ожидание случайной величины $ \xi $:
+          \[
+            \Expect\xi = \int_{0}^{\frac{\pi}{4}} x \cdot 2 \cos(2x) \, dx = \left. x \cdot \sin(2x) \right|_{0}^{\frac{\pi}{4}} - \int_{0}^{\frac{\pi}{4}} \sin(2x) \, dx = \frac{\pi}{4} \cdot \sin\left( \frac{\pi}{2} \right) - \left. \frac{1}{2} \cos(2x) \right|_{0}^{\frac{\pi}{4}} = \frac{\pi}{4} - \frac{1}{2}.
+          \]
+
+    \item Найдем дисперсию случайной величины $ \xi $:
+          \[
+            \Variance\xi = \Expect\xi^{2} - (\Expect\xi)^{2} = \int_{0}^{\frac{\pi}{4}} x^{2} \cdot 2 \cos(2x) \, dx - \left( \frac{\pi}{4} - \frac{1}{2} \right)^{2} = \frac{\pi^{2}}{16} - \frac{\pi}{2} - \frac{\pi^2}{16} - \frac{-\pi+1}{4} = \frac{3}{4} - \frac{\pi}{4}.
+          \]
+
+    \item Найдем энтропию случайной величины $ \xi $:
+          \[
+            \Entropy\xi = - \int_{0}^{\frac{\pi}{4}} \sin(2x) \cdot \ln \sin(2x) \, dx = \frac{1}{2} - \frac{1}{2}\ln 2.
+          \]
+
+    \item Найдем распределение случайной величины $ \eta = \sin(3\xi) $:
+
+          Носитель случайной величины $ \supp \xi = [0, \frac{\pi}{4}] $.
+
+          Носитель случайной величины $ \supp \eta = \{0\} \cup \{ \sin(3x) \mid x \in (0, \frac{\pi}{4}] \} = [0, 1]$.
+
+          \begin{figure}[h!]
+            \centering
+            \begin{tikzpicture}
+              \begin{axis}[
+                  xlabel=$x$,
+                  ylabel=$y$,
+                  xmin=0, xmax=pi/3,
+                  ymin=0, ymax=1.5,
+                  axis lines=middle,
+                  clip=false,
+                  extra x ticks={0},
+                  xtick={0, pi/12, pi/6, pi/4},
+                  xticklabels={0, $\pi/12$, $\pi/6$, $\pi/4$},
+                  ytick={0, 0.5, 1},
+                  yticklabels={0, $\frac{1}{2}$, 1},
+                  width=8cm,
+                  height=6cm
+                ]
+                \addplot[cyan, domain=0:pi/6] {sin(3*deg(x))};
+                \addplot[magenta, domain=pi/6:pi/4] {sin(3*deg(x))};
+              \end{axis}
+            \end{tikzpicture}
+            \caption{$\sin 3x$}
+            \label{fig:hw2:ind:5}
+          \end{figure}
+
+          Разобьем носитель случайной величины $ \eta $ на два интервала, где функция $\sin 3x$ монотонна: $ [0, \frac{\pi}{6}] $ и $ (\frac{\pi}{6}, \frac{\pi}{4}] $.
+
+          \begin{enumerate}
+            \item При $ x \in [0, \frac{\pi}{6}] $, $ y \in [0, 1]$:
+                  \[
+                    \begin{cases}
+                      g_1(x) = \sin 3x, \\
+                      g_1^{-1}(y) = \frac{1}{3}\arcsin y.
+                    \end{cases}
+                  \]
+            \item При $ x \in (\frac{\pi}{6}, \frac{\pi}{4}] $, $ y \in [\frac{\sqrt 2}{2}, 1]$:
+                  \[
+                    \begin{cases}
+                      g_1(x) = \sin 3x, \\
+                      g_1^{-1}(y) = \frac{1}{3}\arcsin y + \frac{\pi}{3}.
+                    \end{cases}
+                  \]
+          \end{enumerate}
+
+          
+
+    \item Построим графики функций распределений $ F_{\xi}(x) $ и $ F_{\eta}(y) $:
+    \item Функция распределения $ F_{\xi}(x) $ задается следующим образом:
+          \[
+            F_{\xi}(x) =
+            \begin{cases}
+              0,        & x \leqslant 0,            \\
+              \sin(2x), & x \in (0, \frac{\pi}{4}], \\
+              1,        & x > \frac{\pi}{4}.
+            \end{cases}
+          \]
+
+    \item Функция распределения $ F_{\eta}(y) $ задается следующим образом:
+    \item Графики функций распределений $ F_{\xi}(x) $ и $ F_{\eta}(y) $ изображены на рисунках~\ref{fig:hw2:ind:3} и~\ref{fig:hw2:ind:4}.
+
+          \begin{figure}[h!]
+            \centering
+            \begin{tikzpicture}
+              \begin{axis}[
+                  xlabel=$x$,
+                  ylabel=$F_{\xi}(x)$,
+                  xmin=-2, xmax=4,
+                  ymin=0, ymax=1.5,
+                  axis lines=middle,
+                  clip=false,
+                  extra x ticks={0},
+                  xtick={-1, 0, 1, 2, 3},
+                  ytick={0, 0.5, 1},
+                  yticklabels={0, $\frac{1}{2}$, 1},
+                  width=8cm,
+                  height=6cm
+                ]
+                \addplot[blue, domain=-2:0] {0};
+                \addplot[blue, domain=0:pi/4] {sin(2*deg(x))};
+                \addplot[blue, domain=pi/4:4] {1};
+              \end{axis}
+            \end{tikzpicture}
+            \caption{График $F_{\xi}(x)$}
+            \label{fig:hw2:ind:3}
+          \end{figure}
+  \end{enumerate}
+\end{proof}
