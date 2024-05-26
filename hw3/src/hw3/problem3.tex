@@ -1,0 +1,151 @@
+\begin{problem}
+Вычислить вектор математических ожиданий, поcтроить ковариационную и корреляционную матрицы для вектора $(\xi,\eta)$. Найти условное распределение $\xi$ при условии $\eta$. Вычислить $\Expect(\xi|\eta)$ и $\Variance(\xi|\eta)$.
+\end{problem}
+\begin{proof}
+    Найдем мат. ожидание случайной величины $(\xi,\eta)$:
+    \begin{sympycode}
+# Expect_xi = integrate(x * p_xi_eta, (x, x_interval_by_y.start, x_interval_by_y.end), (y, y_interval.start, y_interval.end))
+# Expect_eta = integrate(y * p_xi_eta,  (y, y_interval_by_x.start, y_interval_by_x.end), (x, x_interval.start, x_interval.end)).simplify()
+Expect_xi = integrate(x * p_xi, (x, x_interval.start, x_interval.end))
+Expect_eta = integrate(y * p_eta, (y, y_interval.start, y_interval.end))
+Expect_xi_eta = Matrix([Expect_xi, Expect_eta])
+    \end{sympycode}
+    \[
+        \begin{aligned}
+            \Expect \xi
+             & = \int\limits_{-\infty}^{+\infty} x \cdot p_\xi \, dx
+            = \int\limits_{\sympy{x_interval.start}}^{\sympy{x_interval.end}} x \cdot \left(\sympy{p_xi} \right)\, dx
+            = \sympy{Expect_xi},                                      \\
+            \Expect \eta
+             & = \int\limits_{-\infty}^{+\infty} y \cdot p_\eta \, dy
+            = \int\limits_{\sympy{y_interval.start}}^{\sympy{y_interval.end}} y \cdot \left(\sympy{p_eta}\right) \, dy
+            = \sympy{Expect_eta}.
+        \end{aligned}
+    \]
+
+    \[
+        \Expect(\xi,\eta) = \begin{pmatrix}
+            \sympy{Expect_xi} \\
+            \sympy{Expect_eta}
+        \end{pmatrix}
+    \]
+    Найдем ковариационную матрицу:
+    \begin{sympycode}
+Expect_xi_square = integrate(x ** 2 * p_xi, (x, x_interval.start, x_interval.end))
+Expect_eta_square = integrate(y ** 2 * p_eta, (y, y_interval.start, y_interval.end))
+Variance_xi = Expect_xi_square - Expect_xi ** 2
+Variance_eta = Expect_eta_square - Expect_eta ** 2
+Expect_xi_eta = integrate(x * y * p_xi_eta, (y, y_interval_by_x.start, y_interval_by_x.end), (x, x_interval.start, x_interval.end))
+Covariance_xi_eta = Expect_xi_eta - Expect_xi * Expect_eta
+Covariance_matrix = Matrix([[Variance_xi, Covariance_xi_eta], [Covariance_xi_eta, Variance_eta]])
+    \end{sympycode}
+    Вычислим дисперсии $\xi$ и $\eta$:
+    \[
+        \begin{aligned}
+            \Variance \xi
+             & = \Expect \xi^2 - (\Expect \xi)^2
+            = \int\limits_{-\infty}^{+\infty} x^2 \cdot p_\xi \, dx - (\Expect \xi)^2
+            = \int\limits_{\sympy{x_interval.start}}^{\sympy{x_interval.end}} x^2 \cdot \left(\sympy{p_xi}\right) \, dx - \sympy{Expect_xi}^2
+            = \sympy{Variance_xi},                                      \\
+            \Variance \eta
+             & = \int\limits_{-\infty}^{+\infty} y^2 \cdot p_\eta \, dy
+            = \int\limits_{\sympy{y_interval.start}}^{\sympy{y_interval.end}} y^2 \cdot \left(\sympy{p_eta}\right) \, dy
+            = \sympy{Variance_eta}.
+        \end{aligned}
+    \]
+    Найдём ковариацию $\xi$ и $\eta$:
+    \[
+        \begin{aligned}
+            \cov(\xi,\eta)
+             & = \Expect(\xi \cdot \eta) - \Expect \xi \cdot \Expect \eta
+            = \int\limits_{-\infty}^{+\infty} \int\limits_{-\infty}^{+\infty} x \cdot y \cdot p_{\xi,\eta} (x, y) \, dy \, dx
+            \\
+             & = \int\limits_{\sympy{x_interval.start}}^{\sympy{x_interval.end}} \, dx \int\limits_{\sympy{y_interval_by_x.start}}^{\sympy{y_interval_by_x.end}} x \cdot y \cdot \left(\sympy{p_xi_eta}\right)  \, dy
+            = \sympy{Covariance_xi_eta}.
+        \end{aligned}
+    \]
+
+    Матрица ковариаций:
+    \[
+        \Sigma = \sympy{Covariance_matrix}
+    \]
+    Найдем корреляционную матрицу. Для начала вычислим коэффициент корреляции:
+    \begin{sympycode}
+rho_xi_eta = Covariance_xi_eta / sqrt(Variance_xi * Variance_eta)
+    \end{sympycode}
+    \[
+        \rho(\xi,\eta) = \frac{\cov(\xi,\eta)}{\sqrt{\Variance \xi \cdot \Variance \eta}}
+        = \frac{\sympy{Covariance_xi_eta}}{\sqrt{\sympy{Variance_xi} \cdot \sympy{Variance_eta}} }
+        = \sympy{rho_xi_eta}
+    \]
+    Корреляционная матрица:
+    \[
+        R = \begin{pmatrix}
+            1                  & \sympy{rho_xi_eta} \\
+            \sympy{rho_xi_eta} & 1
+        \end{pmatrix}
+    \]
+    Найдем условное распределение $\xi$ при условии $\eta$:
+    \[
+        p_{\xi|\eta=y_0}(x) = \frac{p_{\xi, \eta}(x, y_0)}{p_\eta (y_0)}, p_\eta > 0
+    \]
+    \begin{sympycode}
+x0, y0 = symbols("x_0 y_0")
+p_xi1 = Piecewise((p_xi,  x_interval.contains(x)), (0, True))
+p_eta1 = Piecewise((p_eta, y_interval.contains(y)), (0, True))
+D1 = And(D, y<=5, x>=1)
+p_xi_eta1 = Piecewise((p_xi_eta, D1), (0, True))
+p_xi_cond_y0 = (p_xi_eta / p_eta).subs(y, y0).simplify()
+p_xi_cond_eta = p_xi_cond_y0.subs(y0, eta).doit()
+    \end{sympycode}
+    \[
+        \begin{aligned}
+            p_{\xi|\eta=y_0}(x)
+             & = \frac{p_{\xi, \eta}(x, y_0)}{{p_\eta (y_0)}}
+            \\
+            p_{\xi, \eta}(x, y_0)
+             & = \begin{cases}
+                     \sympy{p_xi_eta}, & \text{for } (x, y_0) \in D, \\
+                     0,                & \text{otherwise}.
+                 \end{cases}
+            \\
+            p_\eta(y_0)
+             & = \sympy{p_eta1.subs(y, y0)}
+            \\
+            p_{\xi|\eta=y_0}(x)
+             & = \begin{cases}
+                     \sympy{p_xi_cond_y0}, & \text{for } x \in \sympy{x_interval_by_y.subs(y, y0)}, y_0 \in \sympy{y_interval}, \\
+                     0,                    & \text{otherwise}.
+                 \end{cases}
+            \\
+            p_{\xi|\eta} (x)
+             & = \begin{cases}
+                     \sympy{p_xi_cond_eta} & \text{for} x \in \sympy{x_interval_by_y.subs(y, eta)}, \\
+                     0                     & \text{otherwise}.
+                 \end{cases}
+        \end{aligned}
+    \]
+    Найдем мат. ожидание и дисперсию случайной величины $\xi$ при условии $\eta$:
+    \begin{sympycode}
+x_interval_cond_eta = x_interval_by_y.subs(y, eta)
+Expect_xi_cond_eta = integrate(x * p_xi_cond_eta, (x, x_interval_cond_eta.start, x_interval_cond_eta.end)).simplify()
+Expect_xi_cond_eta_square = integrate(x ** 2 * p_xi_cond_eta, (x, x_interval_cond_eta.start, x_interval_cond_eta.end))
+Variance_xi_cond_eta = Expect_xi_cond_eta_square - Expect_xi_cond_eta ** 2
+Variance_xi_cond_eta = Variance_xi_cond_eta.simplify()
+    \end{sympycode}
+    \[
+        \begin{aligned}
+            \Expect(\xi|\eta)
+             & = \int\limits_{-\infty}^{+\infty} x \cdot p_{\xi|\eta} (x) \, dx
+            = \int\limits_{\sympy{x_interval_cond_eta.start}}^{\sympy{x_interval_cond_eta.end}} x \cdot \left(\sympy{p_xi_cond_eta}\right) \, dx
+            = \sympy{Expect_xi_cond_eta}
+            \\
+            \Variance(\xi|\eta)
+             & = \Expect(\xi^2|\eta) - (\Expect(\xi|\eta))^2
+            = \int\limits_{-\infty}^{+\infty} x^2 \cdot p_{\xi|\eta} (x) \, dx - (\Expect(\xi|\eta))^2
+            \\
+             & = \int\limits_{\sympy{x_interval_cond_eta.start}}^{\sympy{x_interval_cond_eta.end}} x^2 \cdot \left(\sympy{p_xi_cond_eta}\right) \, dx - \left(\sympy{Expect_xi_cond_eta}\right)^2
+            = \sympy{Variance_xi_cond_eta}
+        \end{aligned}
+    \]
+\end{proof}
